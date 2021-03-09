@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class DefaultController extends AbstractController
 {
     /**
-     * @Route("/default", name="default")
+     * @Route("/", name="default")
      */
     public function index(): Response
     {
@@ -21,8 +21,10 @@ class DefaultController extends AbstractController
     /**
      * @Route("/contact", name="contact")
      */
-    public function contact()
+    public function contact(): Response
     {
-        return $this->render('default/contact.html.twig');
+        return $this->render('default/contact.html.twig', [
+            'controller_name' => 'DefaultController'
+        ]);
     }
 }
