@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ContactRepository;
 use Doctrine\ORM\Mapping as ORM;
 use DateTime;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ContactRepository::class)
@@ -20,16 +21,19 @@ class Contact
 
     /**
      * @ORM\Column(type="string", length=128)
+     * @Assert\Email()
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min=6, max=200)
      */
     private $subject;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Length(min=50)
      */
     private $message;
 

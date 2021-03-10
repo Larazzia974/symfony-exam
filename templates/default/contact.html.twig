@@ -1,11 +1,21 @@
 {% extends 'default/layout.html.twig' %}
+{% form_theme formContact 'bootstrap_4_layout.html.twig' %}
 
 {% block header %}
-<h1>Nous contacter</h1>
+<h1 class="display-1">Nous contacter</h1>
 {% endblock %}
 
 {% block content %}
-<div class="metadata">
-    <p>nous sommes actuellement le {{ "now"|date("d/m/Y H:i:s", "Europe/Paris") }}</p>
+<div class="container-fluid">
+    <p>
+    nous sommes actuellement le {{ "now"|date("d/m/Y H:i:s", "Europe/Paris") }}
+    </p>    
+
+    {{ form_start(formContact) }}
+
+    {{ form_widget(formContact) }}
+
+    {{form_end(formContact)}}
+    
 </div>
 {% endblock %}

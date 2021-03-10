@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Contact;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Contact;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DefaultController extends AbstractController
 {
@@ -15,20 +18,42 @@ class DefaultController extends AbstractController
     public function index(): Response
     {
         $repo = $this->getDoctrine()->getRepository(Contact::class);
-        $listContact = $repo->find(1);
+        $contacts = $repo->findAll();
         return $this->render('default/index.html.twig', [
             'controller_name' => 'DefaultController',
-            'contact' => $listContact
+            'contacts' => $contacts
         ]);
     }
 
     /**
      * @Route("/contact", name="contact")
      */
-    public function contact(): Response
+    public function contact(Request $request, EntityManagerInterface $manager)
     {
+        $contact = new Contact;
+
+        $form = $this->createFormBuilder($contact)
+            ->add('email')
+            ->add('subject')
+            ->add('message')
+            ->add('save', SubmitType::class, [
+                'label' => 'envoyer'
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $contact->setCreatedAt(new \DateTime());
+
+            $manager->persist($contact);
+            $manager->flush();
+
+            return $this->redirectToRoute('default');
+        }
+
         return $this->render('default/contact.html.twig', [
-            'controller_name' => 'DefaultController'
+            'formContact' => $form->createView()
         ]);
     }
 }
